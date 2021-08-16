@@ -66,8 +66,8 @@ love.load = (params) ->
     love.graphics.setDefaultFilter "nearest"
     love.graphics.setLineStyle "rough"
     love.mouse.setVisible false
-    love.graphics.setFont Assets.font.Unifont[16]
-    Dialog.font = Assets.font.Unifont[16]
+    love.graphics.setFont Assets.font.VonwaonBitmap[16]
+    Dialog.font = Assets.font.VonwaonBitmap[16]
     Dialog.optionSwitchSound = Assets.audio.static.se_gui_switch
     Menu.settings.sndMove = Assets.audio.static.se_gui_switch
     Menu.settings.sndSuccess = Assets.audio.static.se_gui_action

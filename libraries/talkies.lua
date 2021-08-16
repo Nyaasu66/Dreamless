@@ -119,7 +119,7 @@ local Talkies = {
   _DESCRIPTION = 'A simple messagebox system for LÖVE',
 
   -- Theme
-  indicatorCharacter      = "˅",
+  indicatorCharacter      = "+",
   optionCharacter         = ">",
   padding                 = 10,
   talkSound               = nil,
