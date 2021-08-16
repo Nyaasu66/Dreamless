@@ -133,8 +133,8 @@ local Talkies = {
   messageBackgroundColor  = {0, 0, 0, 1},
   messageBorderColor      = {1, 1, 1},
   
-  rounding                = 0,
-  thickness               = 1,
+  rounding                = 3,
+  thickness               = 2,
   
   textSpeed               = 1 / 60,
   font                    = nil,
