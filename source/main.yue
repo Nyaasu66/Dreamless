@@ -96,7 +96,6 @@ love.update = (dt) ->
     Dialog.update dt
 
 love.draw = (...) ->
-    love.graphics.clear 0.3, 0.6, 0.9
     Menu.draw!
     Dialog.draw!
     if love.overlay then love.overlay(...)
