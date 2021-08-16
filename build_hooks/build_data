@@ -1,0 +1,29 @@
+if [ -d "data" ] && [ ! "$(ls -A data)" = "" ]; then
+    cp -r data "${build_target}"
+    pushd "${build_target}/data" > /dev/null
+        find * | while read filename; do
+            if [ -f "${filename}" ]; then
+                if [ "${filename##*.}" = "yconf" ]; then
+                    set +e
+                        cat "${filename}" | sed '1i\{' | sed '$a\}' | yue -- > "${filename%.*}.lua"
+                        if [ ! $? = 0 ]; then
+                            echo "Fail to build: data/${filename}"
+                            rm "${filename%.*}.lua"
+                            exit 128
+                        fi
+                    set -e
+                    echo "Built data/${filename}"
+                    rm "${filename}"
+                elif [ "${filename##*.}" = "lua" ]; then
+                    echo "Copied data/${filename}"
+                else
+                    echo "Unsupported data format: data/${filename}"
+                    exit 128
+                fi
+            fi
+        done
+    popd > /dev/null
+elif [ -d "data" ]; then
+    cp -r data "${build_target}"
+    echo "Copied data"
+fi

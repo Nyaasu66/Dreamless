@@ -1,0 +1,109 @@
+--==[[ Main ]]==--
+if love.filesystem.isFused!
+    love.filesystem.mount love.filesystem.getSourceBaseDirectory!, "$"
+    love.filesystem.setRequirePath love.filesystem.getRequirePath! .. ";$/libraries/?.lua;$/libraries/?/init.lua"
+else
+    error "The \"--fused\" parameter or a fused executable is required to run the script"
+
+import "log"
+import "timer"
+import "baton"
+import "menuengine"
+import "gamestate"
+import "utils.lconf"
+import "utils.dialog"
+import "utils.assets_loader"
+import "data.input" as input_options
+if input_options.joystick then input_options.joystick = love.joystick.getJoysticks![input_options.joystick]
+
+global Gamestate = gamestate
+global Log = log
+global Lconf = lconf
+global Config = Lconf("config")
+global Save = Lconf("save")
+global Dialog = dialog
+global Menu =
+    index#: menuengine
+    newindex#: menuengine
+    call#: (...) =>
+        return menuengine.new(...)
+global Timer = timer
+global Input = baton.new input_options
+global Flags = {}
+global Assets = assets_loader
+
+love.load = (params) ->
+    for param in *params
+        switch param
+            when "--debug"
+                Flags.debug_mode = true
+            when "--help"
+                config = {}
+                love.conf(config)
+                project = if type(config.project) == "table" then config.project else {}
+                project.name or= "Untitled"
+                project.version or= "indev"
+                project.description or= "no description"
+                project.author or= "unknown author"
+                project.license or= "all rights reserved"
+                print "\n#{project.name} #{project.version} (#{config.identity}) - #{project.description}"
+                if project.story then print "    #{project.story}"
+                print "    Made by #{project.author}, published under the license: #{project.license}\n    Running with love #{string.format "%d.%d.%d", love.getVersion!} and made for #{config.version or "universal"}"
+                if project.note then print "\nNote:\n    #{string.gsub(project.note, "\n", "\n    ")}"
+                print "\nUsage:\n    <none>         Running with regular operation\n    --debug        Running in debug mode, webserv opened at http://127.0.0.1:8000\n    --help         Showing this help message\n"
+                love.event.quit!
+                return
+    if os.getenv("LOCAL_LUA_DEBUGGER_VSCODE") == "1" then Flags.debug_mode = true
+    if Flags.debug_mode then Log.debug "Debug mode enabled, webserv opened at http://127.0.0.1:8000"
+    love.window.setMode 816, 624
+    love.window.setTitle do
+        config = {}
+        love.conf(config)
+        if type(config.project) == "table" and config.project.name
+            return config.project.name
+        else
+            return "Untitled"
+    love.graphics.setDefaultFilter "nearest"
+    love.graphics.setLineStyle "rough"
+    love.mouse.setVisible false
+    love.graphics.setFont Assets.font.Unifont[16]
+    Dialog.font = Assets.font.Unifont[16]
+    Dialog.optionSwitchSound = Assets.audio.static.se_gui_switch
+    Menu.settings.sndMove = Assets.audio.static.se_gui_switch
+    Menu.settings.sndSuccess = Assets.audio.static.se_gui_action
+    Gamestate.registerEvents!
+    Gamestate.switch require "scenes.overworld"
+
+love.update = (dt) ->
+    if Flags.debug_mode then require("lovebird").update!
+    Timer.update dt
+    Input::update!
+    if Input::pressed "move"
+        _, y = Input::get "move"
+        if y < 0
+            Dialog.prevOption!
+            if not Dialog.isOpen!
+                Menu.keypressed "up"
+        elseif y > 0
+            Dialog.nextOption!
+            if not Dialog.isOpen!
+                Menu.keypressed "down"
+    if Input::pressed "action"
+        Dialog.onAction!
+        if not Dialog.isOpen!
+            Menu.keypressed "space"
+    Menu.update dt
+    Dialog.update dt
+
+love.draw = (...) ->
+    love.graphics.clear 0.3, 0.6, 0.9
+    Menu.draw!
+    Dialog.draw!
+    if love.overlay then love.overlay(...)
+
+love.quit = ->
+    if Flags.prevent_quit then return true
+    Lconf::save!
+
+Timer.every 180, ->
+    Lconf::save!

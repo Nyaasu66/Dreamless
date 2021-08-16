@@ -1,0 +1,26 @@
+if [ -d "libraries" ]; then
+    if [ ! "$(ls -A libraries)" = "" ]; then
+        cp -r libraries "${build_target}"
+        pushd "${build_target}/libraries" > /dev/null
+            find * | while read filename; do
+                if [ -f "${filename}" ]; then
+                    if [ "${filename##*.}" = "yue" ]; then
+                        set +e
+                        yue "${filename}" &> /dev/null
+                        if [ ! $? = 0 ]; then
+                            echo "Fail to compile: libraries/${filename}"
+                            exit 128
+                        fi
+                        set -e
+                        rm "${filename}"
+                        echo "Handled compilation: libraries/${filename} -> libraries/${filename%.*}.lua"
+                    fi
+                fi
+            done
+        popd > /dev/null
+        echo "Built libraries"
+    else
+        cp -r libraries "${build_target}"
+        echo "Copied libraries"
+    fi
+fi

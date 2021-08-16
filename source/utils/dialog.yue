@@ -1,0 +1,106 @@
+import "talkies"
+import "narrator"
+import "utils.assets_loader"
+
+Dialog =
+    index#: talkies
+    newindex#: talkies
+    -- 系统通知（alias say）
+    toast: (message, config = {}) ->
+        config.height = talkies.font::getHeight! + talkies.padding
+        talkies.say(nil, message, config)
+    -- 加载剧情脚本
+    load: (path_or_story, on_complete) ->
+        on_complete or= () -> nil
+        local story
+        if type(path_or_story) == "string"
+            assert love.filesystem.getInfo("$/scripts/#{path_or_story::gsub("%.", "/")}.ink", "file"), "Could not find script: $/scripts/#{path_or_story::gsub("%.", "/")}.ink"
+            story = ({love.filesystem.read "$/scripts/#{path_or_story::gsub("%.", "/")}.ink"})[1] |> narrator.parseBook |> narrator.initStory -- 调用 narrator 解析脚本获得 story 对象
+        elseif type(path_or_story) == "table" -- 若参数为 table 则视为传递了 story 对象
+            story = path_or_story
+        story::begin! -- 开始读取
+        continue_story = -> -- 遍历读取直到无可读 函数
+            if story::canContinue!
+                paragraph = story::continue 1
+                local speed, title, sound, avatar, dialog_type
+                dialog_config = {}
+                if paragraph.tags
+                    for tag in *paragraph.tags
+                        title = tag::match("^Title<.+>$")?::sub(7)::sub(1, -2)
+                        dialog_type = tag::match("^DialogType<.+>")?::sub(12)::sub(1, -2)
+                        with matched = tag::match("^Speed<.+>$")?::sub(7)::sub(1, -2)
+                            if tonumber matched
+                                speed = 1 / tonumber matched
+                                continue
+                        with matched = tag::match("^Sound<.+>$")?::sub(7)::sub(1, -2)
+                            if matched
+                                sound = assets_loader.audio.static[matched]
+                                continue
+                        with matched = tag::match("^Avatar<.+>$")?::sub(8)::sub(1, -2)
+                            if matched
+                                avatar = assets_loader.image[matched]
+                                continue
+                        with matched = tag::match("^DialogConfig<.+>$")?::sub(14)::sub(1, -2)
+                            if matched
+                                matched::gsub "[^;]+", (eqstr) ->
+                                    eqkv = {}
+                                    eqstr::gsub "[^=]+", (kv) ->
+                                        eqkv[#eqkv + 1] = kv
+                                    if #eqkv == 2
+                                        if tonumber eqkv[2]
+                                            eqkv[2] = tonumber eqkv[2]
+                                        elseif eqkv[2]::match "^%[[0-9%.,]+%]$"
+                                            eqkv[2] = loadstring("return {" .. eqkv[2]::sub(2)::sub(1, -2) .. "}")!
+                                        dialog_config[eqkv[1]] = eqkv[2]
+                speed or= if type(story.constants["Speed"]) == "number" then 1 / story.constants["Speed"]
+                dialog_type or= if type(story.constants["DialogType"]) == "string" then story.constants["DialogType"]
+                title or= if type(story.constants["Title"]) == "string" then story.constants["Title"]
+                sound or= if type(story.constants["Sound"]) == "string" then assets_loader.audio.static[story.constants["Sound"]]
+                avatar or= if type(story.constants["Avatar"]) == "string" then assets_loader.image[story.constants["Avatar"]]
+                if type(story.constants["DialogConfig"]) == "string" then story.constants["DialogConfig"]::gsub "[^;]+", (eqstr) ->
+                    eqkv = {}
+                    eqstr::gsub "[^=]+", (kv) ->
+                        eqkv[#eqkv + 1] = kv
+                    if #eqkv == 2
+                        if tonumber eqkv[2]
+                            eqkv[2] = tonumber eqkv[2]
+                        elseif eqkv[2]::match "^%[[0-9%.,]+%]$"
+                            eqkv[2] = loadstring("return {" .. eqkv[2]::sub(2)::sub(1, -2) .. "}")!
+                        if not dialog_config[eqkv[1]]
+                            dialog_config[eqkv[1]] = eqkv[2]
+                talkies.say(
+                    title, -- 标题
+                    paragraph.text::gsub("[^\\]\\n", (str) -> str::sub(1, -3) .. "\n")::gsub("\\\\n", "\\n"), -- 文本
+                    do -- 设置选项，应用 对话速度、角色头像、讲话音效
+                        config = {
+                            oncomplete: continue_story
+                            talkSound: sound
+                            textSpeed: speed
+                            image: avatar
+                            height: switch dialog_type
+                                when "Tiny"
+                                    love.graphics.getHeight! / 4 - 2 * talkies.padding
+                                when "Toast"
+                                    talkies.font::getHeight! + talkies.padding
+                                when "Fullscreen"
+                                    if title
+                                        love.graphics.getHeight! - talkies.font::getHeight! - talkies.padding * 4
+                                    else
+                                        love.graphics.getHeight! - talkies.padding * 2
+                        }
+                        if story::canChoose!
+                            choices = story::getChoices!
+                            config.options = for i, choice in ipairs choices -- 遍历 choices，读取每一个选项的文本并设置选择支 callback 为 story::choose <选择支编号>
+                                {
+                                    choice.text,
+                                    -> story::choose i
+                                }
+                        if next dialog_config
+                            for key, value in pairs dialog_config
+                                config[key] = value
+                        return config
+                )
+            else
+                on_complete!
+        continue_story! -- 立即开始遍历
+return Dialog

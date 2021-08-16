@@ -1,0 +1,4 @@
+if [ -d "scripts" ]; then
+    cp -r scripts "${build_target}"
+    echo "Copied scripts"
+fi

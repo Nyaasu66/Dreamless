@@ -1,0 +1,17 @@
+{
+    "configurations": [
+        {
+            "name": "Launch",
+            "request": "launch",
+            "type": "lua-local",
+            "program": {
+                "command": "love"
+            },
+            "args": [
+                "dist",
+                "--fused"
+            ],
+            "preLaunchTask": "Build"
+        }
+    ]
+}

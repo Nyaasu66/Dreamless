@@ -1,0 +1,4 @@
+if [ -d "assets" ]; then
+    cp -r assets "${build_target}"
+    echo "Copied assets"
+fi

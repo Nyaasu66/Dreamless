@@ -1,0 +1,4 @@
+if [ -d "licenses" ]; then
+    cp -r licenses "${build_target}"
+    echo "Copied licenses"
+fi

@@ -1,0 +1,12 @@
+love.conf = (config) ->
+    config.identity = "moe.nyaacinth.game.dreamless"
+    config.window = nil
+    config.version = "11.3"
+    config.project =
+        name: "Dreamless"
+        version: "0.0.0-indev"
+        description: "Dream Garden"
+        story: "Cats may have a crazy dream before the end of summer..."
+        author: "Nyaacinth"
+        license: "MPL-2.0"
+        note: "Although this project is published under MPL-2.0 License, some of the resources\nmay have specific license or credit info, please unzip the executable and\ncheck the content of \"license\" directory for more details"
