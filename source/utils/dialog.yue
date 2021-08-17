@@ -22,7 +22,7 @@ Dialog =
         continue_story = -> -- 遍历读取直到无可读 函数
             if story::canContinue!
                 paragraph = story::continue 1
-                local speed, title, sound, avatar, dialog_type
+                local speed, title, sound, avatar, dialog_type, font
                 dialog_config = {}
                 if paragraph.tags
                     for tag in *paragraph.tags
@@ -40,6 +40,13 @@ Dialog =
                             if matched
                                 avatar = assets_loader.image[matched]
                                 continue
+                        with matched = tag::match("^Font<.+>$")?::sub(6)::sub(1, -2)
+                            if matched
+                                eqkv = {}
+                                matched::gsub "[^:]+", (kv) ->
+                                    eqkv[#eqkv + 1] = kv
+                                if #eqkv == 2 and tonumber eqkv[2]
+                                    font = assets_loader.font[eqkv[1]][tonumber eqkv[2]]
                         with matched = tag::match("^DialogConfig<.+>$")?::sub(14)::sub(1, -2)
                             if matched
                                 matched::gsub "[^;]+", (eqstr) ->
@@ -57,6 +64,12 @@ Dialog =
                 title or= if type(story.constants["Title"]) == "string" then story.constants["Title"]
                 sound or= if type(story.constants["Sound"]) == "string" then assets_loader.audio.static[story.constants["Sound"]]
                 avatar or= if type(story.constants["Avatar"]) == "string" then assets_loader.image[story.constants["Avatar"]]
+                font or= if type(story.constants["Font"]) == "string"
+                    eqkv = {}
+                    story.constants["Font"]::gsub "[^:]+", (kv) ->
+                        eqkv[#eqkv + 1] = kv
+                    if #eqkv == 2 and tonumber eqkv[2]
+                        assets_loader.font[eqkv[1]][tonumber eqkv[2]]
                 if type(story.constants["DialogConfig"]) == "string" then story.constants["DialogConfig"]::gsub "[^;]+", (eqstr) ->
                     eqkv = {}
                     eqstr::gsub "[^=]+", (kv) ->
@@ -77,6 +90,7 @@ Dialog =
                             talkSound: sound
                             textSpeed: speed
                             image: avatar
+                            font: font
                             height: switch dialog_type
                                 when "Tiny"
                                     love.graphics.getHeight! / 4 - 2 * talkies.padding

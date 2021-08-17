@@ -395,7 +395,10 @@ function Talkies.draw()
 
   -- Next message/continue indicator
   if Talkies.showIndicator then
-    love.graphics.print(currentDialog.indicatorCharacter, boxX+boxW-(2.5*currentDialog.padding), boxY+boxH-currentDialog.fontHeight)
+    pre_indi_font = love.graphics.getFont()
+    love.graphics.setFont(Talkies.font or currentDialog.font)
+    love.graphics.print(currentDialog.indicatorCharacter, boxX+boxW-(2.5*currentDialog.padding), boxY+boxH-(Talkies.font:getHeight() or currentDialog.fontHeight))
+    love.graphics.setFont(pre_indi_font)
   end
 
   love.graphics.pop()
