@@ -22,7 +22,7 @@ Dialog =
         continue_story = -> -- 遍历读取直到无可读 函数
             if story::canContinue!
                 paragraph = story::continue 1
-                local speed, title, sound, avatar, dialog_type, font
+                local speed, title, sound, avatar, dialog_type, font, timeout
                 dialog_config = {}
                 if paragraph.tags
                     for tag in *paragraph.tags
@@ -31,6 +31,10 @@ Dialog =
                         with matched = tag::match("^Speed<.+>$")?::sub(7)::sub(1, -2)
                             if tonumber matched
                                 speed = 1 / tonumber matched
+                                continue
+                        with matched = tag::match("^Timeout<.+>$")?::sub(8)::sub(1, -2)
+                            if tonumber matched
+                                timeout = tonumber matched
                                 continue
                         with matched = tag::match("^Sound<.+>$")?::sub(7)::sub(1, -2)
                             if matched
@@ -60,6 +64,7 @@ Dialog =
                                             eqkv[2] = loadstring("return {" .. eqkv[2]::sub(2)::sub(1, -2) .. "}")!
                                         dialog_config[eqkv[1]] = eqkv[2]
                 speed or= if type(story.constants["Speed"]) == "number" then 1 / story.constants["Speed"]
+                timeout or= if type(story.constants["Timeout"]) == "number" then story.constants["Timeout"]
                 dialog_type or= if type(story.constants["DialogType"]) == "string" then story.constants["DialogType"]
                 title or= if type(story.constants["Title"]) == "string" then story.constants["Title"]
                 sound or= if type(story.constants["Sound"]) == "string" then assets_loader.audio.static[story.constants["Sound"]]
@@ -89,6 +94,7 @@ Dialog =
                             oncomplete: continue_story
                             talkSound: sound
                             textSpeed: speed
+                            timeout: timeout
                             image: avatar
                             font: font
                             height: switch dialog_type

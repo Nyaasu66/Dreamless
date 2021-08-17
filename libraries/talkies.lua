@@ -120,6 +120,7 @@ local Talkies = {
 
   -- Theme
   indicatorCharacter      = "˅",
+  timerCharacter          = ".",
   optionCharacter         = ">",
   padding                 = 10,
   talkSound               = nil,
@@ -172,6 +173,7 @@ function Talkies.say(title, messages, config)
     messages      = msgFifo,
     image         = config.image,
     height        = config.height,
+    timeout       = config.timeout,
     options       = config.options,
     onstart       = config.onstart or function(dialog) end,
     onmessage     = config.onmessage or function(dialog, left) end,
@@ -179,6 +181,7 @@ function Talkies.say(title, messages, config)
 
     -- theme
     indicatorCharacter     = config.indicatorCharacter or Talkies.indicatorCharacter,
+    timerCharacter         = config.timerCharacter or Talkies.timerCharacter,
     optionCharacter        = config.optionCharacter or Talkies.optionCharacter,
     padding                = config.padding or Talkies.padding,
     rounding               = config.rounding or Talkies.rounding,
@@ -196,7 +199,9 @@ function Talkies.say(title, messages, config)
     showOptions = function(dialog) return dialog.messages:len() == 1 and type(dialog.options) == "table" end,
     isShown     = function(dialog) return Talkies.dialogs:peek() == dialog end
   }
-  
+
+  newDialog.timer = newDialog.timeout
+
   newDialog.messageBackgroundColor = config.messageBackgroundColor or Talkies.messageBackgroundColor
   newDialog.titleBackgroundColor = config.titleBackgroundColor or Talkies.titleBackgroundColor or newDialog.messageBackgroundColor
   
@@ -235,6 +240,22 @@ function Talkies.update(dt)
     elseif not currentDialog.talkSound:isPlaying() then
       local pitch = currentDialog.pitchValues[math.random(#currentDialog.pitchValues)]
       playSound(currentDialog.talkSound, pitch)
+    end
+  end
+
+  if currentDialog.timer and (currentMessage.paused or currentMessage.complete) then
+    if currentDialog.timer > 0 then
+      currentDialog.timer = currentDialog.timer - dt
+    else
+      if currentMessage.paused then
+        currentMessage:resume()
+        currentDialog.timer = currentDialog.timeout
+      else
+        if currentDialog:showOptions() then
+          currentDialog.options[currentDialog.optionIndex][2]()
+        end
+        Talkies.advanceMsg()
+      end
     end
   end
 end
@@ -391,11 +412,22 @@ function Talkies.draw()
       love.graphics.setColor(currentDialog.messageColor)
       love.graphics.print(optionText, optionsX, optionsY)
     end
+    if currentDialog.timer then
+      local timeout_indicator_line = ""
+      do
+        local timeout_indicator_num = math.floor(currentDialog.timer)
+        while timeout_indicator_num > 0 do
+          timeout_indicator_line = timeout_indicator_line .. currentDialog.timerCharacter
+          timeout_indicator_num = timeout_indicator_num - 1
+        end
+      end
+      love.graphics.print(timeout_indicator_line, boxX+boxW-(4*currentDialog.padding)-currentDialog.font:getWidth(timeout_indicator_line), boxY+boxH-currentDialog.fontHeight*2)
+    end
   end
 
   -- Next message/continue indicator
   if Talkies.showIndicator then
-    love.graphics.print(currentDialog.indicatorCharacter, boxX+boxW-(2.5*currentDialog.padding), boxY+boxH-(Talkies.font:getHeight() or currentDialog.fontHeight))
+    love.graphics.print(currentDialog.indicatorCharacter, boxX+boxW-(2.5*currentDialog.padding), boxY+boxH-currentDialog.fontHeight)
   end
 
   love.graphics.pop()
