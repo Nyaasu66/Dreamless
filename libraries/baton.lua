@@ -2,6 +2,7 @@ local baton = {
 	_VERSION = 'Baton v1.0.2',
 	_DESCRIPTION = 'Input library for LÖVE.',
 	_URL = 'https://github.com/tesselode/baton',
+	--[=[
 	_LICENSE = [[
 		MIT License
 
@@ -25,6 +26,7 @@ local baton = {
 		OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 		SOFTWARE.
 	]]
+	]=]
 }
 
 -- string parsing functions --

@@ -3,6 +3,7 @@ local LuaTable = {
     _AUTHOR      = 'RamiLego4Game',
     _URL         = 'https://gist.github.com/RamiLego4Game/f656f5c1a118f77c3b7a08f4c65efaaf',
     _DESCRIPTION = 'A library that converts tables to Lua code that can be saved',
+    --[=[
     _LICENSE     = [[
       MIT LICENSE
       Copyright (c) 2016 Rami Sabbagh
@@ -23,6 +24,7 @@ local LuaTable = {
       TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
       SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     ]]
+    ]=]
   }
 
   --[[A library that converts tables to Lua code that can be saved.

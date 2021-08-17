@@ -2,6 +2,7 @@ local deep = {
   _VERSION = "deep v2.0.3",
   _DESCRIPTION = "Queue and execute actions in sequence (can add Z axis to 2D graphics frameworks)",
   _URL = "https://github.com/Nikaoto/deep",
+  --[=[
   _LICENSE = [[
   Copyright (c) 2017 Nikoloz Otiashvili
 
@@ -23,6 +24,7 @@ local deep = {
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
   ]]
+  ]=]
 }
 
 local execQueue = {}

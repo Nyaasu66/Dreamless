@@ -2,6 +2,7 @@ local bump = {
   _VERSION     = 'bump v3.1.7',
   _URL         = 'https://github.com/kikito/bump.lua',
   _DESCRIPTION = 'A collision detection library for Lua',
+  --[=[
   _LICENSE     = [[
     MIT LICENSE
 
@@ -26,6 +27,7 @@ local bump = {
     TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
     SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   ]]
+  ]=]
 }
 
 ------------------------------------------

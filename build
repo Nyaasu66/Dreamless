@@ -76,8 +76,18 @@ enum_filename "${build_source}" | while read current_filename; do
 done
 if [ -d "${build_hooks}" ] && [ ! "$(ls -A ${build_hooks})" = "" ]; then
     enum_filename "${build_hooks}" | while read current_filename; do
+        if [ "${current_filename##*.}" = "finalizer" ]||[ "${current_filename##*.}" = "disabled" ]; then
+            continue
+        fi
         print_info "Running Hooks Provided by ${current_filename}" note
         "$SHELL" "${current_filename}"
+    done
+    enum_filename "${build_hooks}" | while read current_filename; do
+        if [ "${current_filename##*.}" = "finalizer" ]; then
+            print_info "Running Final Hooks Provided by ${current_filename}" note
+            "$SHELL" "${current_filename}"
+            break
+        fi
     done
 fi
 build_task_end_time=$(date "+%s")

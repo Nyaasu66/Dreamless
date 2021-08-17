@@ -1,0 +1,31 @@
+minifier_path="tools/minify.lua"
+if hash luajit 2>/dev/null; then
+    echo "Found LuaJIT"
+else
+    echo "LuaJIT is required but not found. Aborting..."
+    exit 2
+fi
+if [ -f "${minifier_path}" ]; then
+    minifier_path="$(readlink -f "${minifier_path}")"
+else
+    echo "Minifier not Found: ${minifier_path}"
+    exit 2
+fi
+pushd "${build_target}" > /dev/null
+    find * | while read filename; do
+        if [ -f "${filename}" ]; then
+            if [ "${filename##*.}" = "lua" ]; then
+                set +e
+                luajit "${minifier_path}" minify "${filename}" > "${filename}.minified"
+                if [ ! $? = 0 ]; then
+                    echo "Fail to minify: ${filename}"
+                    rm "${filename}.minified"
+                    exit 128
+                fi
+                set -e
+                mv "${filename}.minified" "${filename}"
+                echo "Minified ${filename}"
+            fi
+        fi
+    done
+popd > /dev/null
