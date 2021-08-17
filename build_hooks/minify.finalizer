@@ -18,13 +18,13 @@ pushd "${build_target}" > /dev/null
                 set +e
                 luajit "${minifier_path}" minify "${filename}" > "${filename}.minified"
                 if [ ! $? = 0 ]; then
-                    echo "Fail to minify: ${filename}"
+                    echo "Fail to minify: ${build_target}/${filename}"
                     rm "${filename}.minified"
                     exit 128
                 fi
                 set -e
                 mv "${filename}.minified" "${filename}"
-                echo "Minified ${filename}"
+                echo "Minified ${build_target}/${filename}"
             fi
         fi
     done
