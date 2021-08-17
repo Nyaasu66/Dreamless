@@ -378,7 +378,7 @@ function Talkies.draw()
   -- Message options (when shown)
   if currentDialog:showOptions() and currentMessage.complete then
     if currentDialog.inlineOptions then
-      local optionsY = textY + currentDialog.font:getHeight() * #modmsg
+      local optionsY = textY + currentDialog.font:getHeight() * (#modmsg + 0.5)
       local optionLeftPad = currentDialog.font:getWidth(currentDialog.optionCharacter.." ")
       for k, option in pairs(currentDialog.options) do
         love.graphics.print(option[1], optionLeftPad+textX+currentDialog.padding, optionsY+((k-1)*currentDialog.fontHeight))

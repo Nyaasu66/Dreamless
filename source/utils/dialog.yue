@@ -32,7 +32,7 @@ Dialog =
                             if tonumber matched
                                 speed = 1 / tonumber matched
                                 continue
-                        with matched = tag::match("^Timeout<.+>$")?::sub(8)::sub(1, -2)
+                        with matched = tag::match("^Timeout<.+>$")?::sub(9)::sub(1, -2)
                             if tonumber matched
                                 timeout = tonumber matched
                                 continue

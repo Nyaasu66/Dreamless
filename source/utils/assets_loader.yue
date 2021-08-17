@@ -28,6 +28,14 @@ Assets =
                         @[key] = love.audio.newSource "#{base_url}/audio/#{key}.#{format}", "stream"
                         return @[key]
                 error "Could not find audio: #{base_url}/audio/#{key}.* [stream]"
+        loop:
+            index#: (key) =>
+                for format in *audio_formats
+                    if love.filesystem.getInfo "#{base_url}/audio/#{key}.#{format}", "file"
+                        @[key] = love.audio.newSource "#{base_url}/audio/#{key}.#{format}", "stream"
+                        @[key]::setLooping true
+                        return @[key]
+                error "Could not find audio: #{base_url}/audio/#{key}.* [loop]"
     image:
         index#: (key) =>
             for format in *image_formats
