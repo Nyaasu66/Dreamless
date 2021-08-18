@@ -772,4 +772,6 @@ bump.responses = {
   bounce = bounce
 }
 
+setmetatable(bump, {__call = function (_, ...) bump.newWorld(...) end})
+
 return bump
