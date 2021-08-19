@@ -1,5 +1,4 @@
 import "class.animation" as Animation
-import "muun"
 
 class Character extends Animation
     new: (animation_path, world, spawn_x = 0, spawn_y = 0, speed = 10, controller = Input) =>
