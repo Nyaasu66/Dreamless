@@ -54,7 +54,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -- @member relativeOriginY the y origin as a multiplier of the sprite's height
 -- @member visible boolean, whether the sprite is visible
 --
-LoveAnimation = {
+local LoveAnimation = {
 	-- Members
 	filepath = nil,
 	descriptor = nil,
@@ -76,7 +76,6 @@ LoveAnimation = {
 	_stateStartCallbacks = {},
 
 }
-LoveAnimation.__index = LoveAnimation
 
 
 -- Static
@@ -478,3 +477,7 @@ end
 function LoveAnimation:onStateStart(state, callback)
 	self._stateStartCallbacks[state] = callback
 end
+
+setmetatable(LoveAnimation, {__call = function(_, ...) LoveAnimation.new(...) end})
+
+return LoveAnimation

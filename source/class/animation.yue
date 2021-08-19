@@ -1,0 +1,8 @@
+import "muun"
+import "animation" as love_animation
+
+muun "Animation", {
+    new: (...) =>
+        love_animation.init self, (...)
+    index#: love_animation
+}

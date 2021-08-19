@@ -1,0 +1,19 @@
+import "class.animation" as Animation
+import "muun"
+
+class Character extends Animation
+    new: (animation_path, world, spawn_x = 0, spawn_y = 0, speed = 10, controller = Input) =>
+        super animation_path
+        @world = world
+        @x = spawn_x
+        @y = spawn_y
+        @speed = speed
+        @controller = controller
+        @world::add self, @x, @y, @getFrameWidth!, @getFrameHeight!
+        @velocity = {0, 0}
+    update: (dt) =>
+        ix, iv = controller::get "move"
+        @velocity.x = ix * dt * @speed
+        @velocity.y = iy * dt * @speed
+        @x, @y = @world::move self, @x + @velocity.x, @y + @velocity.y
+        super dt
