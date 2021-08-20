@@ -1,8 +1,11 @@
 import "class.animation" as Animation
+import "vector"
 
 class Character extends Animation
     new: (animation_path, world, spawn_x = 0, spawn_y = 0, speed = 10, controller = Input) =>
         super animation_path
+        assert @descriptor.states.move_up and @descriptor.states.move_down and @descriptor.states.move_left and @descriptor.states.move_right, "Invalid Character Sprite"
+        @pause!
         @world = world
         @x = spawn_x
         @y = spawn_y
@@ -11,8 +14,54 @@ class Character extends Animation
         @world::add self, @x, @y, @getFrameWidth!, @getFrameHeight!
         @velocity = {0, 0}
     update: (dt) =>
-        ix, iv = controller::get "move"
-        @velocity.x = ix * dt * @speed
-        @velocity.y = iy * dt * @speed
+        ix, iy = @controller::get "move"
+        if ix != 0 or iy != 0
+            @unpause!
+            @velocity.x = ix * dt * @speed
+            @velocity.y = iy * dt * @speed
+            irad, ilen = vector.toPolar ix, iy
+            @setSpeedMultiplier ilen
+            if ix == 0
+                if iy > 0
+                    if @currentState != "move_up" then @setState "move_up"
+                elseif @currentState != "move_down"
+                    @setState "move_down"
+            elseif iy == 0
+                if ix > 0
+                    if @currentState != "move_right" then @setState "move_right"
+                elseif @currentState != "move_left"
+                    @setState "move_left"
+            elseif ix > 0 and iy > 0 -- First Quodrant
+                if irad < math.pi / 6 and @currentState != "move_right"
+                    @setState "move_right"
+                elseif irad > math.pi / 3 and @currentState != "move_up"
+                    @setState "move_up"
+                elseif @currentState != "move_right" and @currentState != "move_up"
+                    @setState ({"move_right", "move_up"})[math.random 1, 2]
+            elseif ix < 0 and iy > 0 -- Second Quodrant
+                if irad < math.pi * (2 / 3) and @currentState != "move_up"
+                    @setState "move_up"
+                elseif irad > math.pi * (5 / 6) and @currentState != "move_left"
+                    @setState "move_left"
+                elseif @currentState != "move_left" and @currentState != "move_up"
+                    @setState ({"move_left", "move_up"})[math.random 1, 2]
+            elseif ix < 0 and iy < 0 -- Third Quodrant
+                if irad < -math.pi * (5 / 6) and @currentState != "move_left"
+                    @setState "move_left"
+                elseif irad > -math.pi * (2 / 3) and @currentState != "move_down"
+                    @setState "move_down"
+                elseif @currentState != "move_down" and @currentState != "move_left"
+                    @setState ({"move_down", "move_left"})[math.random 1, 2]
+            else -- Fourth Quodrant
+                if irad < -math.pi / 3 and @currentState != "move_down"
+                    @setState "move_down"
+                elseif irad > -math.pi / 6 and @currentState != "move_right"
+                    @setState "move_right"
+                elseif @currentState != "move_right" and @currentState != "move_down"
+                    @setState ({"move_down", "move_right"})[math.random 1, 2]
+        else
+            @pause!
+            @setCurrentFrame 1
+            @velocity.x, @velocity.y = 0, 0
         @x, @y = @world::move self, @x + @velocity.x, @y + @velocity.y
         super dt

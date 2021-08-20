@@ -478,6 +478,6 @@ function LoveAnimation:onStateStart(state, callback)
 	self._stateStartCallbacks[state] = callback
 end
 
-setmetatable(LoveAnimation, {__call = function(_, ...) LoveAnimation.new(...) end})
+setmetatable(LoveAnimation, {__call = function(_, ...) return LoveAnimation.new(...) end})
 
 return LoveAnimation

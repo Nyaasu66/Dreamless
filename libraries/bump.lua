@@ -772,6 +772,6 @@ bump.responses = {
   bounce = bounce
 }
 
-setmetatable(bump, {__call = function (_, ...) bump.newWorld(...) end})
+setmetatable(bump, {__call = function (_, ...) return bump.newWorld(...) end})
 
 return bump
