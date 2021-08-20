@@ -1,0 +1,31 @@
+imageSrc: "$/assets/images/not_a_image.png"
+defaultState: "move_up"
+states:
+    move_up:
+        frameCount: 3
+        offsetY: 0
+        frameW: 100
+        frameH: 90
+        nextState: "move_up"
+        switchDelay: 0.1
+    move_down:
+        frameCount: 3
+        offsetY: 100
+        frameW: 100
+        frameH: 90
+        nextState: "move_down"
+        switchDelay: 0.1
+    move_left:
+        frameCount: 3
+        offsetY: 200
+        frameW: 100
+        frameH: 90
+        nextState: "move_left"
+        switchDelay: 0.1
+    move_right:
+        frameCount: 3
+        offsetY: 200
+        frameW: 100
+        frameH: 90
+        nextState: "move_right"
+        switchDelay: 0.1
