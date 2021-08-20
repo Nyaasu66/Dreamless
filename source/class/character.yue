@@ -16,9 +16,11 @@ class Character extends Animation
         @x = spawn_x
         @y = spawn_y
         @speed = speed
-        @controller = controller
+        @controller = index#: controller
         @world::add self, @x, @y, @getFrameWidth!, @getFrameHeight!
         @velocity = {0, 0}
+    setController: (controller) =>
+        @controller = index#: controller
     update: (dt) =>
         ix, iy = @controller::get "move"
         if ix != 0 or iy != 0
