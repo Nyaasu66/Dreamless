@@ -7,6 +7,7 @@ else
     error "The \"--fused\" parameter or a fused executable is required to run the script"
 
 import "log"
+import "wave"
 import "timer"
 import "baton"
 import "menuengine"
@@ -18,6 +19,7 @@ import "data.input" as input_options
 if input_options.joystick then input_options.joystick = love.joystick.getJoysticks![input_options.joystick]
 
 global Gamestate = gamestate
+global Audio = wave
 global Log = log
 global Lconf = lconf
 global Config = Lconf("config")
@@ -78,6 +80,7 @@ love.load = (params) ->
 love.update = (dt) ->
     if Flags.debug_mode then require("lovebird").update!
     Timer.update dt
+    Audio::update dt
     Input::update!
     if Input::pressed "move"
         _, y = Input::get "move"
