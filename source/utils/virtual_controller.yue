@@ -1,1 +1,80 @@
 class VirtualController
+    new: (config) =>
+        assert type(config) == "table" and config.controls, "Invalid Input Config"
+        @controls = {}
+        for control, sources in pairs config.controls
+            @controls[control] =
+                sources: sources
+                rawValue: 0
+                value: 0
+                down: false
+                downPrevious: false
+                pressed: false
+                released: false
+        @pairs = {}
+        for pair, controls in pairs config.pairs
+            @pairs[pair] =
+                controls: controls
+                rawX: 0
+                rawY: 0
+                x: 0
+                y: 0
+                down: false
+                downPrevious: false
+                pressed: false
+                released: false
+    set: (keytype, node, config) =>
+        assert keytype == "pair" or keytype == "control", "Expecting virtual key type in \"pair\" or \"control\", got #{keytype}"
+        if keytype == "control"
+            assert @controls[node], "No controls with name #{node} defined"
+            for key, value in pairs config
+                @controls[node][key] = value
+        else
+            assert @pairs[node], "No pairs with name #{node} defined"
+            for key, value in pairs config
+                @pairs[node][key] = value
+    get: (name) =>
+        if @pairs[name]
+            if not @disabled
+                return @pairs[name].x, @pairs[name].y
+            return 0, 0
+        elseif @controls[name]
+            if not @disabled
+                return @controls[name].value
+            return 0
+        else
+            error "No control with name \"#{name}\" defined"
+    released: (name) =>
+        if @pairs[name]
+            if not @disabled
+                return @pairs[name].released
+            return false
+        elseif @controls[name]
+            if not @disabled
+                return @controls[name].released
+            return false
+        else
+            error "No control with name \"#{name}\" defined"
+    pressed: (name) =>
+        if @pairs[name]
+            if not @disabled
+                return @pairs[name].pressed
+            return false
+        elseif @controls[name]
+            if not @disabled
+                return @controls[name].pressed
+            return false
+        else
+            error "No control with name \"#{name}\" defined"
+    down: (name) =>
+        if @pairs[name]
+            if not @disabled
+                return @pairs[name].down
+            return false
+        elseif @controls[name]
+            if not @disabled
+                return @controls[name].down
+            return false
+        else
+            error "No control with name \"#{name}\" defined"
+    getRaw: (...) -> @get(...)
