@@ -180,6 +180,7 @@ function Player:_init(config)
 	self:_initControls()
 	self:_initPairs()
 	self._activeDevice = 'none'
+	self.disabled = false
 end
 
 --[[
@@ -301,9 +302,15 @@ end
 -- gets the value of a control or axis pair without deadzone applied
 function Player:getRaw(name)
 	if self._pairs[name] then
-		return self._pairs[name].rawX, self._pairs[name].rawY
+		if not self.disabled then
+			return self._pairs[name].rawX, self._pairs[name].rawY
+		end
+		return 0, 0
 	elseif self._controls[name] then
-		return self._controls[name].rawValue
+		if not self.disabled then
+			return self._controls[name].rawValue
+		end
+		return 0
 	else
 		error('No control with name "' .. name .. '" defined', 3)
 	end
@@ -312,9 +319,15 @@ end
 -- gets the value of a control or axis pair with deadzone applied
 function Player:get(name)
 	if self._pairs[name] then
-		return self._pairs[name].x, self._pairs[name].y
+		if not self.disabled then
+			return self._pairs[name].x, self._pairs[name].y
+		end
+		return 0, 0
 	elseif self._controls[name] then
-		return self._controls[name].value
+		if not self.disabled then
+			return self._controls[name].value
+		end
+		return 0
 	else
 		error('No control with name "' .. name .. '" defined', 3)
 	end
@@ -323,9 +336,15 @@ end
 -- gets whether a control or axis pair is "held down"
 function Player:down(name)
 	if self._pairs[name] then
-		return self._pairs[name].down
+		if not self.disabled then
+			return self._pairs[name].down
+		end
+		return false
 	elseif self._controls[name] then
-		return self._controls[name].down
+		if not self.disabled then
+			return self._controls[name].down
+		end
+		return false
 	else
 		error('No control with name "' .. name .. '" defined', 3)
 	end
@@ -334,9 +353,15 @@ end
 -- gets whether a control or axis pair was pressed this frame
 function Player:pressed(name)
 	if self._pairs[name] then
-		return self._pairs[name].pressed
+		if not self.disabled then
+			return self._pairs[name].pressed
+		end
+		return false
 	elseif self._controls[name] then
-		return self._controls[name].pressed
+		if not self.disabled then
+			return self._controls[name].pressed
+		end
+		return false
 	else
 		error('No control with name "' .. name .. '" defined', 3)
 	end
@@ -345,9 +370,15 @@ end
 -- gets whether a control or axis pair was released this frame
 function Player:released(name)
 	if self._pairs[name] then
-		return self._pairs[name].released
+		if not self.disabled then
+			return self._pairs[name].released
+		end
+		return false
 	elseif self._controls[name] then
-		return self._controls[name].released
+		if not self.disabled then
+			return self._controls[name].released
+		end
+		return false
 	else
 		error('No control with name "' .. name .. '" defined', 3)
 	end
