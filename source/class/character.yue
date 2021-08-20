@@ -1,6 +1,12 @@
 import "class.animation" as Animation
 import "vector"
 
+const _lC = -- Cache
+    "math.pi / 6": math.pi / 6
+    "math.pi / 3": math.pi / 3
+    "math.pi * (2 / 3)": math.pi * (2 / 3)
+    "math.pi * (5 / 6)": math.pi * (5 / 6)
+
 class Character extends Animation
     new: (animation_path, world, spawn_x = 0, spawn_y = 0, speed = 10, controller = Input) =>
         super animation_path
@@ -32,30 +38,30 @@ class Character extends Animation
                 elseif @currentState != "move_left"
                     @setState "move_left"
             elseif ix > 0 and iy > 0 -- First Quadrant
-                if irad < math.pi / 6 and @currentState != "move_right"
+                if irad < _lC["math.pi / 6"] and @currentState != "move_right"
                     @setState "move_right"
-                elseif irad > math.pi / 3 and @currentState != "move_up"
+                elseif irad > _lC["math.pi / 3"] and @currentState != "move_up"
                     @setState "move_up"
                 elseif @currentState != "move_right" and @currentState != "move_up"
                     @setState ({"move_right", "move_up"})[math.random 1, 2]
             elseif ix < 0 and iy > 0 -- Second Quadrant
-                if irad < math.pi * (2 / 3) and @currentState != "move_up"
+                if irad < _lC["math.pi * (2 / 3)"] and @currentState != "move_up"
                     @setState "move_up"
-                elseif irad > math.pi * (5 / 6) and @currentState != "move_left"
+                elseif irad > _lC["math.pi * (5 / 6)"] and @currentState != "move_left"
                     @setState "move_left"
                 elseif @currentState != "move_left" and @currentState != "move_up"
                     @setState ({"move_left", "move_up"})[math.random 1, 2]
             elseif ix < 0 and iy < 0 -- Third Quadrant
-                if irad < -math.pi * (5 / 6) and @currentState != "move_left"
+                if irad < -_lC["math.pi * (5 / 6)"] and @currentState != "move_left"
                     @setState "move_left"
-                elseif irad > -math.pi * (2 / 3) and @currentState != "move_down"
+                elseif irad > -_lC["math.pi * (2 / 3)"] and @currentState != "move_down"
                     @setState "move_down"
                 elseif @currentState != "move_down" and @currentState != "move_left"
                     @setState ({"move_down", "move_left"})[math.random 1, 2]
             else -- Fourth Quadrant
-                if irad < -math.pi / 3 and @currentState != "move_down"
+                if irad < -_lC["math.pi / 3"] and @currentState != "move_down"
                     @setState "move_down"
-                elseif irad > -math.pi / 6 and @currentState != "move_right"
+                elseif irad > -_lC["math.pi / 6"] and @currentState != "move_right"
                     @setState "move_right"
                 elseif @currentState != "move_right" and @currentState != "move_down"
                     @setState ({"move_down", "move_right"})[math.random 1, 2]
