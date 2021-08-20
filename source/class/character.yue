@@ -31,28 +31,28 @@ class Character extends Animation
                     if @currentState != "move_right" then @setState "move_right"
                 elseif @currentState != "move_left"
                     @setState "move_left"
-            elseif ix > 0 and iy > 0 -- First Quodrant
+            elseif ix > 0 and iy > 0 -- First Quadrant
                 if irad < math.pi / 6 and @currentState != "move_right"
                     @setState "move_right"
                 elseif irad > math.pi / 3 and @currentState != "move_up"
                     @setState "move_up"
                 elseif @currentState != "move_right" and @currentState != "move_up"
                     @setState ({"move_right", "move_up"})[math.random 1, 2]
-            elseif ix < 0 and iy > 0 -- Second Quodrant
+            elseif ix < 0 and iy > 0 -- Second Quadrant
                 if irad < math.pi * (2 / 3) and @currentState != "move_up"
                     @setState "move_up"
                 elseif irad > math.pi * (5 / 6) and @currentState != "move_left"
                     @setState "move_left"
                 elseif @currentState != "move_left" and @currentState != "move_up"
                     @setState ({"move_left", "move_up"})[math.random 1, 2]
-            elseif ix < 0 and iy < 0 -- Third Quodrant
+            elseif ix < 0 and iy < 0 -- Third Quadrant
                 if irad < -math.pi * (5 / 6) and @currentState != "move_left"
                     @setState "move_left"
                 elseif irad > -math.pi * (2 / 3) and @currentState != "move_down"
                     @setState "move_down"
                 elseif @currentState != "move_down" and @currentState != "move_left"
                     @setState ({"move_down", "move_left"})[math.random 1, 2]
-            else -- Fourth Quodrant
+            else -- Fourth Quadrant
                 if irad < -math.pi / 3 and @currentState != "move_down"
                     @setState "move_down"
                 elseif irad > -math.pi / 6 and @currentState != "move_right"
