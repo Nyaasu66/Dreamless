@@ -1,7 +1,7 @@
 import "class.animation" as Animation
 import "vector"
 
-const _lC = -- Cache
+local _lC = -- Cache
     "math.pi / 6": math.pi / 6
     "math.pi / 3": math.pi / 3
     "math.pi * (2 / 3)": math.pi * (2 / 3)
