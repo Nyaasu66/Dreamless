@@ -1,1 +1,15 @@
-{}
+import "sti"
+import "bump"
+import "class.character" as Character
+
+local state
+local collision_world
+local map
+
+{
+    init: =>
+        if not type(Save.overworld) == "table"
+            Save.overworld = {}
+        state = Save.overworld
+        collision_world = bump.new 64
+}

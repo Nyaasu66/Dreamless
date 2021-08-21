@@ -1,6 +1,10 @@
+-- Virtual Controller, Global Input Simulator
+---@reference libraries/baton.lua
+
 class VirtualController
     new: (config) =>
         assert type(config) == "table" and config.controls, "Invalid Input Config"
+        config.pairs or= {}
         @_controls = {}
         for control, sources in pairs config.controls
             @_controls[control] =
