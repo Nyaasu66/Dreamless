@@ -1613,4 +1613,4 @@ end
 -- @field polyline List of verticies of specific shape
 -- @see Map.objects
 
-return setmetatable({}, STI)
+return setmetatable({load = function(...) return STI.__call(nil, ...) end}, STI)
