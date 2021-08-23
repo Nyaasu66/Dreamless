@@ -5,25 +5,19 @@
             "request": "launch",
             "type": "lua-local",
             "program": {
-                "command": "love"
+                "command": "bash"
             },
-            "args": [
-                "dist",
-                "--fused"
-            ],
-            "preLaunchTask": "Build"
-        },
-        {
-            "name": "Launch_OSX",
-            "request": "launch",
-            "type": "lua-local",
-            "program": {
-                "command": "/Applications/love.app/Contents/MacOS/love"
+            "osx": {
+                "env": {
+                    "LOVE_EXECUTABLE": "/Applications/love.app/Contents/MacOS/love"
+                }
             },
-            "args": [
-                "dist",
-                "--fused"
-            ],
+            "linux": {
+                "env": {
+                    "LOVE_EXECUTABLE": "love"
+                }
+            },
+            "args": ["-c \"\\\"${LOVE_EXECUTABLE}\\\" dist --fused\""],
             "preLaunchTask": "Build"
         }
     ]
