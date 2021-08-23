@@ -2,14 +2,15 @@ import "sti"
 import "bump"
 import "class.character" as Character
 
-local state
-local collision_world
 local map
 
 {
     init: =>
-        if not type(Save.overworld) == "table"
-            Save.overworld = {}
-        state = Save.overworld
-        collision_world = bump.new 64
+        map = sti.load "$/data/map/overworld.lua"
+    enter: =>
+        Dialog.load "todo_gugugu"
+    update: (dt) =>
+        map::update dt
+    draw: =>
+        map::draw 0, 0, 2
 }

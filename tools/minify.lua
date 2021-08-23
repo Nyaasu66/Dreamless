@@ -1777,8 +1777,10 @@ function AddVariableInfo(ast)
 			-- A function stat may also assign to a global variable if it is in
 			-- the form `function foo()` with no additional dots/colons in the 
 			-- name chain.
+			-- Nyaacinth: there's also some "foo()" has a "local foo" in its parentScope... =.=
 			local nameChain = stat.NameChain
 			local var;
+			--[=[ Damn, there's some functions has a local statement in its parentScope, we need to check ALL of them, DON'T SKIP!!!
 			if #nameChain == 1 then
 				-- If there is only one item in the name chain, then the first item
 				-- is a reference to a global variable.
@@ -1790,6 +1792,10 @@ function AddVariableInfo(ast)
 					nameChain[1].Source = name
 				end)
 			end
+			]=]
+			var = referenceVariable(nameChain[1].Source, function(name)
+				nameChain[1].Source = name
+			end)
 			var.AssignedTo = true
 			pushScope()
 			for index, ident in pairs(stat.ArgList) do
@@ -2513,13 +2519,24 @@ local function StripAst(ast)
 		--  Touching words: `a b` -> `ab` is invalid
 		--  Touching digits: `2 3`, can't occurr in the Lua syntax as number literals aren't a primary expression
 		--  Abiguous syntax: `f(x)\n(x)()` is already disallowed, we can't cause a problem by removing newlines
+		--  Malformed number: "1..2" or "a = 1;b = 2; a..b"
+		--  Abiguous syntax but with semicolon: `f(x);(x)()` or `a[d];(x)()` or `{t};(x)()` remove semicolon between them will make it ambiguous then cause problems
 
 		-- Figure out what separation is needed
-		if 
+		if
 			(lastCh == '-' and firstCh == '-') or
-			(AllIdentChars[lastCh] and AllIdentChars[firstCh])
+			(AllIdentChars[lastCh] and AllIdentChars[firstCh]) or
+			(tokenB.Source == '..') or
+			(tokenA.Source == '..')
 		then
 			tokenB.LeadingWhite = ' ' -- Use a separator
+		elseif
+			(lastCh == ')' and firstCh == '(') or
+			(lastCh == ']' and firstCh == '(') or
+			(lastCh == '}' and firstCh == '(')
+			-- Ambiguous syntax but with semicolon
+		then
+			tokenB.LeadingWhite = ';' -- Use semicolon as separator
 		else
 			tokenB.LeadingWhite = '' -- Don't use a separator
 		end

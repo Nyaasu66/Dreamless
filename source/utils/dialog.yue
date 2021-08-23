@@ -51,6 +51,7 @@ Dialog =
                                     eqkv[#eqkv + 1] = kv
                                 if #eqkv == 2 and tonumber eqkv[2]
                                     font = assets_loader.font[eqkv[1]][tonumber eqkv[2]]
+                                continue
                         with matched = tag::match("^DialogConfig<.+>$")?::sub(14)::sub(1, -2)
                             if matched
                                 matched::gsub "[^;]+", (eqstr) ->
