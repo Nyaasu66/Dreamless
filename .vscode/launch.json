@@ -12,6 +12,19 @@
                 "--fused"
             ],
             "preLaunchTask": "Build"
+        },
+        {
+            "name": "Launch_OSX",
+            "request": "launch",
+            "type": "lua-local",
+            "program": {
+                "command": "/Applications/love.app/Contents/MacOS/love"
+            },
+            "args": [
+                "dist",
+                "--fused"
+            ],
+            "preLaunchTask": "Build"
         }
     ]
 }
