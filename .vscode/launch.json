@@ -5,12 +5,19 @@
             "request": "launch",
             "type": "lua-local",
             "program": {
-                "command": "love"
+                "command": "bash"
             },
-            "args": [
-                "dist",
-                "--fused"
-            ],
+            "osx": {
+                "env": {
+                    "LOVE_EXECUTABLE": "/Applications/love.app/Contents/MacOS/love"
+                }
+            },
+            "linux": {
+                "env": {
+                    "LOVE_EXECUTABLE": "love"
+                }
+            },
+            "args": ["-c \"\\\"${LOVE_EXECUTABLE}\\\" dist --fused\""],
             "preLaunchTask": "Build"
         }
     ]

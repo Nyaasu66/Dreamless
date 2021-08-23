@@ -1,1 +1,12 @@
+# Universal
 dist
+.configured
+
+# OSX
+.DS_Store
+
+# Windows
+thumbs.db
+
+# Linux - Plasma
+.directory

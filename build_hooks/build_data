@@ -5,7 +5,9 @@ if [ -d "data" ] && [ ! "$(ls -A data)" = "" ]; then
             if [ -f "${filename}" ]; then
                 if [ "${filename##*.}" = "yconf" ]; then
                     set +e
-                        cat "${filename}" | sed '1i\{' | sed '$a\}' | yue -- > "${filename%.*}.lua"
+                        cat "${filename}" | sed '1i\
+                            {' | sed '$a\
+                            }' | yue -- > "${filename%.*}.lua"
                         if [ ! $? = 0 ]; then
                             echo "Fail to build: data/${filename}"
                             rm "${filename%.*}.lua"
