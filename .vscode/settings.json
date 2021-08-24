@@ -8,34 +8,5 @@
     "files.associations": {
         "*.yconf": "yuescript",
         "*.lconf": "lua"
-    },
-    "terminal.integrated.profiles.linux": {
-        "bash": {
-            "path": "bash",
-            "args": ["-c", "if ! [ -f \".configured\" ]; then echo -e \"\\n\\033[1m    Hello, Nyaacinth here! If you saw this message, maybe you just cloned Dreamless repo and opened it with VSCode. Here's something need to be noticed:\\n\\n    1) Except the libraries, this project is mostly written in yuescript (a dialect to moonscript), and there's no extension support in VSCode. For syntax-highlighting, you need to download https://github.com/Nyaacinth/Iroiro/raw/main/yuescript_syntax.json and package it yourself.\\n\\n    2) This is a personal project, so if you decided to make a contribution now, there is a high probability that the contribution won't be accepted.\\n\\n    3) This is a derivative work of Dream Diary, and due to that the goal of this project may be slightly different from your thinking.\\n\"; read -n 1 -s -r -p \"Press any key to continue...\"; clear; echo \"true\" > \".configured\"; fi; exec $SHELL"]
-        }
-    },
-    "terminal.integrated.profiles.osx": {
-        "bash": {
-            "path": "bash",
-            "args": ["-c", "if ! [ -f \".configured\" ]; then echo -e \"\\n\\033[1m    Hello, Nyaacinth here! If you saw this message, maybe you just cloned Dreamless repo and opened it with VSCode. Here's something need to be noticed:\\n\\n    1) Except the libraries, this project is mostly written in yuescript (a dialect to moonscript), and there's no extension support in VSCode. For syntax-highlighting, you need to download https://github.com/Nyaacinth/Iroiro/raw/main/yuescript_syntax.json and package it yourself.\\n\\n    2) This is a personal project, so if you decided to make a contribution now, there is a high probability that the contribution won't be accepted.\\n\\n    3) This is a derivative work of Dream Diary, and due to that the goal of this project may be slightly different from your thinking.\\n\"; read -n 1 -s -r -p \"Press any key to continue...\"; clear; echo \"true\" > \".configured\"; fi; exec $SHELL"]
-        }
-    },
-    "terminal.integrated.profiles.windows": {
-        "PowerShell": {
-            "source": "PowerShell",
-            "args": ["-c", "echo \"Build in Windows is not supported, please consider using WSL instead\"; Start-Sleep -s 5"]
-        },
-        "Command Prompt": {
-            "path": [
-                "${env:windir}\\Sysnative\\cmd.exe",
-                "${env:windir}\\System32\\cmd.exe"
-            ],
-            "args": ["/C", "echo \"Build in Windows is not supported, please consider using WSL instead\"; timeout /T 5 /NOBREAK"]
-        },
-        "Git Bash": {
-            "source": "Git Bash",
-            "args": ["-c", "echo \"Build in Windows is not supported, please consider using WSL instead\"; sleep 5"]
-        }
     }
 }
