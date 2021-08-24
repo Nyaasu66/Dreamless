@@ -8,16 +8,18 @@ local _lC = -- Cache
     "math.pi * (5 / 6)": math.pi * (5 / 6)
 
 class Character extends Animation
-    new: (animation_path, world, spawn_x = 0, spawn_y = 0, speed = 10, controller = Input) =>
+    new: (animation_path, world, spawn_x = 0, spawn_y = 0, speed = 10, colliable_width = 0, colliable_height = 0, controller = Input) =>
         super animation_path
         assert @descriptor.states.move_up and @descriptor.states.move_down and @descriptor.states.move_left and @descriptor.states.move_right, "Invalid Character Sprite"
         @pause!
+        if colliable_width <= 0 then colliable_width = @getFrameWidth!
+        if colliable_height <= 0 then colliable_height = @getFrameHeight!
         @world = world
         @x = spawn_x
         @y = spawn_y
         @speed = speed
         @controller = index#: controller
-        @world::add self, @x, @y, @getFrameWidth!, @getFrameHeight!
+        @world::add self, @x, @y, colliable_width, colliable_height
         @velocity = {0, 0}
     setController: (controller) =>
         @controller = index#: controller

@@ -88,7 +88,7 @@ Dialog =
                         if not dialog_config[eqkv[1]]
                             dialog_config[eqkv[1]] = eqkv[2]
                 talkies.say(
-                    if dialog_type != "Toast" then title, -- 标题
+                    if dialog_type != "Toast" and dialog_type != "Floating" then title, -- 标题
                     paragraph.text::gsub("[^\\]\\n", (str) -> str::sub(1, -3) .. "\n")::gsub("\\\\n", "\\n"), -- 文本
                     do -- 设置选项，应用 对话速度、角色头像、讲话音效
                         config = {
@@ -98,11 +98,19 @@ Dialog =
                             timeout: timeout
                             image: avatar
                             font: font
+                            posx: if dialog_type == "Floating"
+                                love.graphics.getWidth! / 4 + talkies.padding
+                            posy: if dialog_type == "Floating"
+                                love.graphics.getHeight! * (3 / 8) + talkies.padding
+                            width: if dialog_type == "Floating"
+                                love.graphics.getWidth! / 2 - 2 * talkies.padding
                             height: switch dialog_type
                                 when "Tiny"
                                     love.graphics.getHeight! / 4 - 2 * talkies.padding
                                 when "Toast"
                                     talkies.font::getHeight! + talkies.padding * 2
+                                when "Floating"
+                                    love.graphics.getHeight! / 4 - 2 * talkies.padding
                                 when "Fullscreen"
                                     if title
                                         love.graphics.getHeight! - talkies.font::getHeight! - talkies.padding * 4

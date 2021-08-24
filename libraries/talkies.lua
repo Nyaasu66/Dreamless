@@ -148,6 +148,9 @@ local Talkies = {
   showIndicator           = false,
   dialogs                 = Fifo.new(),
 
+  posx                    = nil,
+  posy                    = nil,
+  width                   = nil,
   height                  = nil,
 }
 
@@ -172,6 +175,9 @@ function Talkies.say(title, messages, config)
     title         = title or "",
     messages      = msgFifo,
     image         = config.image,
+    posx          = config.posx,
+    posy          = config.posy,
+    width         = config.width,
     height        = config.height,
     timeout       = config.timeout,
     options       = config.options,
@@ -302,10 +308,10 @@ function Talkies.draw()
   love.graphics.setLineWidth(currentDialog.thickness)
 
   -- message box
-  local boxW = windowWidth-(2*currentDialog.padding)
+  local boxW = currentDialog.width or Talkies.width or windowWidth-(2*currentDialog.padding)
   local boxH = currentDialog.height or Talkies.height or (windowHeight/3)-(2*currentDialog.padding)
-  local boxX = currentDialog.padding
-  local boxY = windowHeight-(boxH+currentDialog.padding)
+  local boxX = currentDialog.posx or Talkies.posx or currentDialog.padding
+  local boxY = currentDialog.posy or Talkies.posy or windowHeight-(boxH+currentDialog.padding)
 
   -- image
   local imgX, imgY, imgW, imgScale = boxX+currentDialog.padding, boxY+currentDialog.padding, 0, 0
