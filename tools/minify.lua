@@ -109,7 +109,7 @@ local Digits = lookupify{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
 local HexDigits = lookupify{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 
                             'A', 'a', 'B', 'b', 'C', 'c', 'D', 'd', 'E', 'e', 'F', 'f'}
 
-local Symbols = lookupify{'+', '-', '*', '/', '^', '%', ',', '{', '}', '[', ']', '(', ')', ';', '#', '.', ':'}
+local Symbols = lookupify{'+', '-', '*', '/', '^', '%', ',', '{', '}', '[', ']', '(', ')', ';', '#', '.', ':', '|', '&'}
 
 local EqualSymbols = lookupify{'~', '=', '>', '<'}
 
@@ -128,7 +128,7 @@ local BinopSet = lookupify{
 	'+', '-', '*', '/', '%', '^', '#',
 	'..', '.', ':',
 	'>', '<', '<=', '>=', '~=', '==',
-	'and', 'or'
+	'and', 'or', '&', '|'
 }
 
 local GlobalRenameIgnore = lookupify{
@@ -150,7 +150,9 @@ local BinaryPriority = {
    ['>='] = {3, 3};
    ['<='] = {3, 3};
    ['and'] = {2, 2};
+   ['&'] = {2, 2};
    ['or'] = {1, 1};
+   ['|'] = {1, 1};
 };
 local UnaryPriority = 8
 
@@ -324,7 +326,13 @@ function CreateLuaTokenStream(text)
 				local c2 = get()
 				if c2 == '\\' then
 					local c3 = get()
-					if not(Digits[c3] or CharacterForEscape[c3]) then
+					if c3 == 'x' then
+						local c4 = get()
+						local c5 = get()
+						if not(HexDigits[c4] and HexDigits[c5]) then
+							error("Invalid Hexadecimal Sequence `"..c4..c5.."`.")
+						end
+					elseif not(Digits[c3] or CharacterForEscape[c3]) then
 						error("Invalid Escape Sequence `"..c3.."`.")
 					end
 				elseif c2 == c1 then
@@ -1411,7 +1419,7 @@ function VisitAst(ast, visitors)
 			visitExpr(expr.Rhs)
 		elseif expr.Type == 'NumberLiteral' or expr.Type == 'StringLiteral' or 
 			expr.Type == 'NilLiteral' or expr.Type == 'BooleanLiteral' or 
-			expr.Type == 'VargLiteral' 
+			expr.Type == 'VargLiteral'
 		then
 			-- No children to visit, single token literals
 		elseif expr.Type == 'FieldExpr' then

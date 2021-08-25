@@ -148,10 +148,12 @@ local Talkies = {
   showIndicator           = false,
   dialogs                 = Fifo.new(),
 
+  timeout                 = nil,
+
   posx                    = nil,
   posy                    = nil,
   width                   = nil,
-  height                  = nil,
+  height                  = nil
 }
 
 local msgFifo
@@ -175,11 +177,11 @@ function Talkies.say(title, messages, config)
     title         = title or "",
     messages      = msgFifo,
     image         = config.image,
-    posx          = config.posx,
-    posy          = config.posy,
-    width         = config.width,
-    height        = config.height,
-    timeout       = config.timeout,
+    posx          = config.posx or Talkies.posx,
+    posy          = config.posy or Talkies.posy,
+    width         = config.width or Talkies.width,
+    height        = config.height or Talkies.height,
+    timeout       = config.timeout or Talkies.timeout,
     options       = config.options,
     onstart       = config.onstart or function(dialog) end,
     onmessage     = config.onmessage or function(dialog, left) end,

@@ -9,6 +9,7 @@ CONST DialogConfig = "rounding=3;thickness=2"
 
 接下来?
 + [退出]
+    退出中--.--.--.-- 嘘だよ) #DialogType<Floating> #DialogConfig<messageBackgroundColor=[0,0,0,0];thickness=0;indicatorCharacter= >
     动动手, 点击左上角 (对 Windows 来说是右上角) 就可以退出了喵
 + [发呆]
     好喵)
